@@ -11,8 +11,12 @@ function readEntry(key) {
   }
 }
 
-for (const card of document.querySelectorAll(".book[data-key]")) {
+const cards = [...document.querySelectorAll(".book[data-key]")];
+const ranked = [];
+
+for (const card of cards) {
   const entry = readEntry(card.dataset.key);
+  ranked.push({ card, at: entry?.at ?? 0 });
   const link = card.querySelector(".book-link");
   const fill = card.querySelector(".fill");
   const pct = card.querySelector(".pct");
@@ -35,3 +39,7 @@ for (const card of document.querySelectorAll(".book[data-key]")) {
   card.classList.add("started");
   card.title = `继续：${entry.title ?? entry.slug}`;
 }
+
+ranked.sort((a, b) => b.at - a.at);
+const shelf = document.querySelector(".shelf");
+for (const { card } of ranked) shelf.insertBefore(card, shelf.querySelector(".book.empty"));

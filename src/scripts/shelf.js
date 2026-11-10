@@ -31,7 +31,8 @@ for (const card of cards) {
   const ratio = Math.max(0, Math.min(1, entry.ratio ?? 0));
   const index = Number(entry.chapterIndex ?? 0);
   const total = Math.max(1, Number(entry.chapterTotal ?? 1));
-  const bookRatio = Math.max(0, Math.min(1, (index + ratio) / total));
+  const fallback = (index + ratio) / total;
+  const bookRatio = Math.max(0, Math.min(1, entry.bookProgress ?? fallback));
   const percent = Math.round(bookRatio * 100);
   const done = index >= total - 1 && ratio > 0.97;
   const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;

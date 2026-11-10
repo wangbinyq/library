@@ -31,10 +31,10 @@ for (const card of cards) {
   const ratio = Math.max(0, Math.min(1, entry.ratio ?? 0));
   const percent = Math.round(ratio * 100);
   const done = ratio > 0.97;
-  const anchor = ratio > 0.02 && !done ? `#b-${entry.anchor ?? 0}` : "";
+  const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;
 
   link.href = `${base}${entry.slug}/${anchor}`;
-  fill.style.width = `${Math.max(4, percent)}%`;
+  fill.style.width = `${percent}%`;
   pct.textContent = done ? "读完" : `读到 ${percent}%`;
   card.classList.add("started");
   card.title = `继续：${entry.title ?? entry.slug}`;

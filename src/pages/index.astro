@@ -1,0 +1,50 @@
+---
+import Base from "../layouts/Base.astro";
+import "../styles/global.css";
+import { books } from "../data/books.js";
+---
+
+<Base>
+  <main>
+    <header class="shelf-head">
+      <h1>书架</h1>
+      <p class="count">{books.length} 本书 · 中文译本</p>
+    </header>
+
+    <ul class="shelf">
+      {
+        books.map((book) => (
+          <li class="book" data-key={book.storeKey} data-href={book.href} data-start={book.start}>
+            <a class="book-link" href={book.href}>
+              <span class="cover">
+                <img src={`${import.meta.env.BASE_URL}${book.cover}`} alt={`${book.title} 封面`} loading="lazy" />
+              </span>
+              <span class="info">
+                <span class="title">{book.title}</span>
+                <span class="subtitle">{book.subtitle}</span>
+                <span class="author">{book.author} · {book.meta}</span>
+                <span class="state">
+                  <span class="bar"><span class="fill" /></span>
+                  <span class="pct">未读</span>
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+      <li class="book empty" aria-hidden="true">
+        <span class="spine-placeholder">
+          <span>下一本</span>
+        </span>
+      </li>
+    </ul>
+
+    <p class="note">
+      进度存在这台设备的浏览器里，每个站点独立。点书直接回到上次停下的位置。
+    </p>
+  </main>
+
+  <script>
+    import "../scripts/shelf.js";
+  </script>
+</Base>

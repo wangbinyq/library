@@ -1,0 +1,21 @@
+---
+import { books } from "../data/books.js";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3eee4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17161a" media="(prefers-color-scheme: dark)" />
+    <title>书架 · 中文译本</title>
+    <meta name="description" content="两本英文专业书的中文译本阅读站：疼痛、治疗性运动。" />
+    <slot name="head" />
+  </head>
+  <body data-base={base}>
+    <slot />
+  </body>
+</html>

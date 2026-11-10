@@ -12,38 +12,55 @@ function readEntry(key) {
 }
 
 const cards = [...document.querySelectorAll(".book[data-key]")];
-const ranked = [];
+const shelf = document.querySelector(".shelf");
 
-for (const card of cards) {
-  const entry = readEntry(card.dataset.key);
-  ranked.push({ card, at: entry?.at ?? 0 });
-  const link = card.querySelector(".book-link");
-  const fill = card.querySelector(".fill");
-  const pct = card.querySelector(".pct");
-  const base = card.dataset.href;
+function render() {
+  const ranked = [];
 
-  if (!entry) {
-    link.href = `${base}${card.dataset.start}/`;
-    card.classList.add("unread");
-    continue;
+  for (const card of cards) {
+    const entry = readEntry(card.dataset.key);
+    const link = card.querySelector(".book-link");
+    const fill = card.querySelector(".fill");
+    const pct = card.querySelector(".pct");
+    const base = card.dataset.href;
+
+    card.classList.remove("started", "unread");
+    card.removeAttribute("title");
+
+    if (!entry) {
+      link.href = `${base}${card.dataset.start}/`;
+      fill.style.width = "0";
+      pct.textContent = "未读";
+      card.classList.add("unread");
+      ranked.push({ card, at: 0 });
+      continue;
+    }
+
+    const ratio = Math.max(0, Math.min(1, entry.ratio ?? 0));
+    const index = Number(entry.chapterIndex ?? 0);
+    const total = Math.max(1, Number(entry.chapterTotal ?? 1));
+    const fallback = (index + ratio) / total;
+    const bookRatio = Math.max(0, Math.min(1, entry.bookProgress ?? fallback));
+    const percent = Math.round(bookRatio * 100);
+    const done = index >= total - 1 && ratio > 0.97;
+    const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;
+
+    link.href = `${base}${entry.slug}/${anchor}`;
+    fill.style.width = `${percent}%`;
+    pct.textContent = done ? "读完" : `读到 ${percent}%`;
+    card.classList.add("started");
+    card.title = `继续：${entry.title ?? entry.slug}`;
+    ranked.push({ card, at: entry.at ?? 0 });
   }
 
-  const ratio = Math.max(0, Math.min(1, entry.ratio ?? 0));
-  const index = Number(entry.chapterIndex ?? 0);
-  const total = Math.max(1, Number(entry.chapterTotal ?? 1));
-  const fallback = (index + ratio) / total;
-  const bookRatio = Math.max(0, Math.min(1, entry.bookProgress ?? fallback));
-  const percent = Math.round(bookRatio * 100);
-  const done = index >= total - 1 && ratio > 0.97;
-  const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;
-
-  link.href = `${base}${entry.slug}/${anchor}`;
-  fill.style.width = `${percent}%`;
-  pct.textContent = done ? "读完" : `读到 ${percent}%`;
-  card.classList.add("started");
-  card.title = `继续：${entry.title ?? entry.slug}`;
+  ranked.sort((a, b) => b.at - a.at);
+  for (const { card } of ranked) shelf.appendChild(card);
 }
 
-ranked.sort((a, b) => b.at - a.at);
-const shelf = document.querySelector(".shelf");
-for (const { card } of ranked) shelf.insertBefore(card, shelf.querySelector(".book.empty"));
+render();
+
+window.addEventListener("pageshow", render);
+window.addEventListener("focus", render);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") render();
+});

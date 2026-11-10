@@ -29,8 +29,11 @@ for (const card of cards) {
   }
 
   const ratio = Math.max(0, Math.min(1, entry.ratio ?? 0));
-  const percent = Math.round(ratio * 100);
-  const done = ratio > 0.97;
+  const index = Number(entry.chapterIndex ?? 0);
+  const total = Math.max(1, Number(entry.chapterTotal ?? 1));
+  const bookRatio = Math.max(0, Math.min(1, (index + ratio) / total));
+  const percent = Math.round(bookRatio * 100);
+  const done = index >= total - 1 && ratio > 0.97;
   const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;
 
   link.href = `${base}${entry.slug}/${anchor}`;

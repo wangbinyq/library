@@ -43,9 +43,9 @@ function render() {
     const bookRatio = Math.max(0, Math.min(1, entry.bookProgress ?? fallback));
     const percent = Math.round(bookRatio * 100);
     const done = index >= total - 1 && ratio > 0.97;
-    const anchor = done ? "" : `#b-${entry.anchor ?? 0}`;
+    const where = done ? "" : `#r-${(ratio * 100).toFixed(2)}`;
 
-    link.href = `${base}${entry.slug}/${anchor}`;
+    link.href = `${base}${entry.slug}/${where}`;
     fill.style.width = `${percent}%`;
     pct.textContent = done ? "读完" : `读到 ${percent}%`;
     card.classList.add("started");

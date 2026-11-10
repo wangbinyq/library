@@ -96,7 +96,6 @@ main {
   padding: 0 0 1rem;
   list-style: none;
   border-bottom: 6px solid var(--wood);
-  box-shadow: 0 14px 20px -16px rgb(0 0 0 / 55%);
 }
 
 .book {
